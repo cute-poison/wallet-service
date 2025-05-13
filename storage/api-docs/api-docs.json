@@ -1,0 +1,361 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "wallet-service API",
+        "description": "Fintech Wallet Service API documentation",
+        "contact": {
+            "name": "API Support",
+            "email": "support@example.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Main (local) server"
+        }
+    ],
+    "paths": {
+        "/api/wallets/{walletId}/transactions": {
+            "get": {
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Get paginated transaction history for a wallet",
+                "description": "List paginated transactions for a wallet.",
+                "operationId": "listTransactions",
+                "parameters": [
+                    {
+                        "name": "walletId",
+                        "in": "path",
+                        "description": "ID of the wallet",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of transactions per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of transactions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Transaction"
+                                            }
+                                        },
+                                        "total": {
+                                            "type": "integer"
+                                        },
+                                        "per_page": {
+                                            "type": "integer"
+                                        },
+                                        "current_page": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Wallet not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/wallets": {
+            "post": {
+                "tags": [
+                    "Wallets"
+                ],
+                "summary": "Create a new wallet for the authenticated user",
+                "description": "Create a new wallet.",
+                "operationId": "createWallet",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "currency"
+                                ],
+                                "properties": {
+                                    "currency": {
+                                        "type": "string",
+                                        "example": "USD"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Wallet created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "user_id": {
+                                            "type": "integer"
+                                        },
+                                        "currency": {
+                                            "type": "string"
+                                        },
+                                        "balance": {
+                                            "type": "number",
+                                            "format": "float"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/wallets/{id}": {
+            "get": {
+                "tags": [
+                    "Wallets"
+                ],
+                "summary": "Get wallet details by ID",
+                "description": "Retrieve a wallet’s details and balance.",
+                "operationId": "getWallet",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Wallet details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "currency": {
+                                            "type": "string"
+                                        },
+                                        "balance": {
+                                            "type": "number",
+                                            "format": "float"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Wallet not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/wallets/transfer": {
+            "post": {
+                "tags": [
+                    "Wallets"
+                ],
+                "summary": "Transfer funds from one wallet to another",
+                "description": "Transfer funds between two wallets.",
+                "operationId": "transferFunds",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "from_wallet_id",
+                                    "to_wallet_id",
+                                    "amount",
+                                    "idempotency_key"
+                                ],
+                                "properties": {
+                                    "from_wallet_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "to_wallet_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 50
+                                    },
+                                    "idempotency_key": {
+                                        "type": "string",
+                                        "example": "unique-key-123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transfer successful; returns updated source wallet",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Wallet"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation or business rule error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Transaction": {
+                "title": "Transaction",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "wallet_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 150.75
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "debit"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-01-01T00:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-01-01T00:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Wallet": {
+                "title": "Wallet",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "balance": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 1500.75
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-01-01T00:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-01-01T00:00:00Z"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format: Bearer {token}",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Transactions",
+            "description": "Endpoints for listing wallet transaction history"
+        },
+        {
+            "name": "Wallets",
+            "description": "Endpoints for creating and managing wallets"
+        }
+    ],
+    "security": [
+        {
+            "sanctum": []
+        }
+    ]
+}
