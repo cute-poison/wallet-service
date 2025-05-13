@@ -1,4 +1,4 @@
-markdown
+
 # wallet-service
 
 A Laravel 10 backend API for a fintech wallet application.
