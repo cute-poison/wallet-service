@@ -1,21 +1,20 @@
-````markdown
+markdown
 # wallet-service
 
-A **Laravel 10** backend API for a fintech wallet application.
+A Laravel 10 backend API for a fintech wallet application.
 
----
+
 
 ## 🚀 Features
 
-- **Create wallets** (USD, EUR, etc.)  
-- **View balances**  
-- **Secure, atomic, idempotent transfers**  
-- **Paginated transaction history**  
-- **Token authentication** via Laravel Sanctum  
-- **Per-user rate limiting**  
-- **Interactive Swagger/OpenAPI docs** at `/api/documentation`
+ **Create wallets** (USD, EUR, etc.)  
+ **View balances**  
+ **Secure, atomic, idempotent transfers**  
+ **Paginated transaction history**  
+ **Token authentication** via Laravel Sanctum  
+ **Per-user rate limiting**  
+ **Interactive Swagger/OpenAPI docs** at `/api/documentation`
 
----
 
 ## 💻 Setup & Installation
 
@@ -38,7 +37,7 @@ A **Laravel 10** backend API for a fintech wallet application.
    php artisan key:generate
    ```
 
-   – Edit `.env` to set your database credentials, `APP_URL`, etc.
+   Edit `.env` to set your database credentials, `APP_URL`, etc.
 
 4. **Prepare the database**
 
@@ -80,7 +79,7 @@ Run the full test suite:
 php artisan test
 ```
 
----
+
 
 ## 🛠️ Postman Collection
 
@@ -115,7 +114,7 @@ php artisan test
 
 5. **Run** any request in the collection to verify functionality.
 
----
+
 
 ## 🔑 `.env.example`
 
@@ -136,14 +135,5 @@ DB_USERNAME=your_db_user
 DB_PASSWORD=your_db_password
 
 SANCTUM_STATEFUL_DOMAINS=127.0.0.1:8000
-```
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License**.
-See [LICENSE](LICENSE) for details.
-
 ```
 ```
